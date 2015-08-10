@@ -28,7 +28,9 @@ def game_info
 end
 
 # YOUR CODE HERE
+
 class Team
+  attr_accessor :name, :rank, :wins, :losses
 
   def initialize(name, rank = 0, wins = 0, losses = 0)
     @name = name
@@ -37,24 +39,43 @@ class Team
     @losses = losses
   end
 
-  def name
-    @name
+end
+def team_exist?(team_name, team_array)
+    team = team_array.find { |t| t.name == team_name }
+
+  if team.nil?
+    team = Team.new(team_name)
+    team_array << team
+  end
+  team
+end
+teams = []
+
+game_info.each do |game|
+  home_team = team_exist?(game[:home_team], teams)
+  away_team = team_exist?(game[:away_team], teams)
+
+  if game[:home_score] > game[:away_score]
+    home_team.wins += 1
+    away_team.losses += 1
+  elsif game[:away_score] > game[:home_score]
+    away_team.wins += 1
+    home_team.losses += 1
+  else
+    puts "no game happened"
   end
 
-  def rank
-    @rank
-  end
 
-  def wins
-    @wins
-  end
-
-  def losses
-    @losses
-  end
-
+puts home_team.class
 end
 
+
+puts teams
+
+
+
+
+=begin
 teams = []
 game_info.each do |game|
   teams << game.fetch(:home_team)
@@ -63,6 +84,8 @@ end
 teams = teams.uniq
 team_list = []
 teams.each do |team|
-  team_list << Team.new(team)
+  team_list << Team.new(team[:name])
 end
-puts team_list[1].class
+
+puts team_list
+=end
